@@ -14,31 +14,35 @@ En acceptabel nackdel i mina ögon. Användaren behöver bara logga in igen.
 
 ## Prerequisites
 
-Förutom Debian eller t ex Ubuntu så förutsätter nedan klipp och klistra en del saker:
-* sed:
-  * Att `/etc/pam.d/sudo` och `/etc/pam.d/sshd` ser ut som dom ska för att `sed` ska göra sitt
-  * Gäller även `nsswitch.conf`
-  * sed går att ändra och anpassa
+Except for Debian and for example Ubuntu, the below cut and paste assumes:
 
-Finns paket att installera istället för git-clone, använd paket istället. Det överlever uppgraderingar bättre.
+* sed:
+  * That `/etc/pam.d/sudo` and `/etc/pam.d/sshd` look like they should so `sed` can do it's thing
+  * Goes for `nsswitch.conf` too
+
+If there are packages available, use them instead of git clone. The packages will survive upgrades better.
 
 ## Features & limitations
 
 Features:
+
 * TACACS+ authentication, authorization, accounting
 * SSH pubkey login
 * Local user and password login
 
 Limitations:
-* None as far as I know
+
+* Does not handle TACACS password changes
 
 ### libnss-ato
 
-Kräver att en användare finns lokalt, specifikt en användare med samma UID som i `libnss-ato.conf`. Vi lägger upp system-kontot `tac_helper` och läser in dess `passwd` till `libnss-ato.conf`.
+Requires that a user exists locally, specifically a user with the same UID as in `libnss-ato.conf`. We create the system-account `tac_helper` and grep it's `/etc/passwd` to `libnss-ato.conf`.
+Read more [here](https://github.com/donapieppo/libnss-ato).
 
 ## Chain of events
 
 Följande händer för en användare som inte finns sedan tidigare på servern.
+
 1) Användaren försöker logga in (med rätt lösenord) till servern
    1) `NSS` med `libnss-ato` berättar för SSH att användaren finns
    2) SSH låter PAM autentisera användaren, i vårt fall med TACACS+
@@ -55,7 +59,7 @@ Följande händer för en användare som inte finns sedan tidigare på servern.
 
 ## Packages
 
-```
+```bash
 sudo -E bash
 apt update
 apt install build-essential dh-make p7zip p7zip-full p7zip-rar unzip
@@ -64,9 +68,9 @@ git clone https://github.com/donapieppo/libnss-ato.git
 
 ## Installation
 
-Glöm inte att ändra `<serverip>` och `<secret>` till dina värden.
+Don't forget to change `<serverip>` and `<secret>` to match your setup.
 
-```
+```bash
 cd libnss-ato/
 fakeroot debian/rules binary
 cd ../
@@ -99,12 +103,17 @@ EOF
 
 chmod u+x /usr/sbin/pam_verify
 
-cat <<EOF > /etc/pam.d/tacplus
-auth       requisite pam_tacplus.so server=<serverip> secret=<nyckel>
-#auth       sufficient pam_exec.so log=/tmp/debug.log /usr/sbin/pam_verify debug
-auth       sufficient pam_exec.so /usr/sbin/pam_verify
-account    required pam_tacplus.so server=<serverip> secret=<nyckel> service=ppp protocol=ip
-session    required pam_tacplus.so server=<serverip> secret=<nyckel> service=ppp protocol=ip
+cat <<EOF > /etc/pam.d/tacplus-auth
+auth       sufficient pam_tacplus.so server=<serverip> secret=<secret>
+EOF
+
+cat <<EOF > /etc/pam.d/tacplus-session
+session    required pam_exec.so log=/tmp/debug.log /usr/sbin/pam_verify
+session    optional pam_tacplus.so server=<serverip> secret=<secret> service=ppp protocol=ip
+EOF
+
+cat <<EOF > /etc/pam.d/tacplus-account
+account    sufficient pam_tacplus.so server=<serverip> secret=<secret> service=ppp protocol=ip
 EOF
 
 cat <<EOF > /etc/pam.d/tacplus_sudo
@@ -112,5 +121,7 @@ auth       sufficient pam_tacplus.so server=<serverip> secret=<nyckel> prompt=Pa
 EOF
 
 sed -e 's/^@include common-auth/@include tacplus_sudo\n@include common-auth/' -i /etc/pam.d/sudo
-sed -e 's/^# PAM configuration for the Secure Shell service/# PAM configuration for the Secure Shell service\n@include tacplus/' -i /etc/pam.d/sshd
+sed -e 's/^@include common-auth/@include tacplus-auth\n@include common-auth/' \
+ -e 's/^@include common-account/@include tacplus-account\n@include common-account/' \
+ -e 's/^@include common-session/@include common-session\n@include tacplus-session/' -i /etc/pam.d/sshd
 ```
