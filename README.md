@@ -1,6 +1,6 @@
 # TACACS login for Linux servers
 
-This documentation is only for Debian and related distros, ie Ubuntu. This instruction is written from view of an Ubuntu 20.04 Focal Fossa.
+This documentation is only for Debian and related distros, for example Ubuntu. It is written from view of an Ubuntu 20.04 Focal Fossa.
 
 ## The problems
 
