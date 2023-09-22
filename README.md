@@ -1,6 +1,6 @@
 # TACACS login for Linux servers
 
-This documentation is only for Debian and related distros, for example Ubuntu. It is written from view of an Ubuntu 20.04 Focal Fossa.
+This documentation is only for Debian and related distros, for example Ubuntu. It is written from the view of an Ubuntu 20.04 Focal Fossa.
 
 ## The problems
 
@@ -49,16 +49,16 @@ More can be read [bere](https://github.com/kravietz/pam_tacplus).
 
 ### Helpful links
 
-CUMULUS has done this [before](https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-55/System-Configuration/Authentication-Authorization-and-Accounting/TACACS/).
-SSH reeeeee [here](https://groups.google.com/g/event-driven-servers/c/UkjMDuYAApM/m/7gW5YzxyDwAJ)
-NSS module [here](https://github.com/benschumacher/nss_tacplus)
-Future [reference](https://medium.com/@avirzayev/linux-pam-how-to-create-an-authentication-module-cc132115bdc5)
-Original(?) [author](https://github.com/jeroennijhof?tab=repositories), check out the `pam_script`.
-Reference to `pam_exec` [here](http://evertrue.github.io/blog/2016/02/03/fun-with-pam-scripts/)
-PAM status [codes](https://pubs.opengroup.org/onlinepubs/8329799/chap5.htm)
-DO [reference](https://www.digitalocean.com/community/tutorials/how-to-use-pam-to-configure-authentication-on-an-ubuntu-12-04-vps)
-Online sed [emulator](https://sed.js.org/)
-[Good](https://duo.com/blog/what-duo-unix-administrators-need-to-know-about-pluggable-authentication-modules) explanation on PAM controls, visual. Though still does not explain the entirety of PAM.
+* CUMULUS has done this [before](https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-55/System-Configuration/Authentication-Authorization-and-Accounting/TACACS/)
+* SSH reeeeee [here](https://groups.google.com/g/event-driven-servers/c/UkjMDuYAApM/m/7gW5YzxyDwAJ)
+* NSS module [here](https://github.com/benschumacher/nss_tacplus)
+* Future [reference](https://medium.com/@avirzayev/linux-pam-how-to-create-an-authentication-module-cc132115bdc5)
+* Original(?) [author](https://github.com/jeroennijhof?tab=repositories), check out the `pam_script`.
+* Reference to `pam_exec` [here](http://evertrue.github.io/blog/2016/02/03/fun-with-pam-scripts/)
+* PAM status [codes](https://pubs.opengroup.org/onlinepubs/8329799/chap5.htm)
+* DO [reference](https://www.digitalocean.com/community/tutorials/how-to-use-pam-to-configure-authentication-on-an-ubuntu-12-04-vps)
+* Online sed [emulator](https://sed.js.org/)
+* [Good](https://duo.com/blog/what-duo-unix-administrators-need-to-know-about-pluggable-authentication-modules) explanation on PAM controls. Visual. Though still does not explain the entirety of PAM. Like how is global auth set when using substacks.
 
 ## Chain of events
 
