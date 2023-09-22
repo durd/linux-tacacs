@@ -1,8 +1,8 @@
-# TACACS-inlogg för linux-servrar
+# TACACS login for Linux servers
 
-Denna dokumentation är endast för Debian och relaterade distros, dvs även Ubuntu. Denna text är skriven utifrån en Ubuntu 20.04 Focal Fossa.
+This documentation is only for Debian and related distros, ie Ubuntu. This instruction is written from view of an Ubuntu 20.04 Focal Fossa.
 
-## Problemställningar
+## The problems
 
 SSH kollar själv om en användare finns eller inte mha NSS. Och om SSH inte får att användaren redan finns så skickas SSH till PAM att lösenordet är dåligt. OAVSETT vad PAM säger sen.
 
@@ -12,7 +12,7 @@ Det tredje alternativet är låta simulera att en användare finns, oavsett vad.
 En nackdel är att man blir bortkopplad från servern första gången, detta för att det blir ett moment 22 där du loggar in med en användare som inte finns förän du loggar in.  
 En acceptabel nackdel i mina ögon. Användaren behöver bara logga in igen.
 
-## Förutsättningar
+## Prerequisites
 
 Förutom Debian eller t ex Ubuntu så förutsätter nedan klipp och klistra en del saker:
 * sed:
@@ -22,11 +22,21 @@ Förutom Debian eller t ex Ubuntu så förutsätter nedan klipp och klistra en d
 
 Finns paket att installera istället för git-clone, använd paket istället. Det överlever uppgraderingar bättre.
 
+## Features & limitations
+
+Features:
+* TACACS+ authentication, authorization, accounting
+* SSH pubkey login
+* Local user and password login
+
+Limitations:
+* None as far as I know
+
 ### libnss-ato
 
 Kräver att en användare finns lokalt, specifikt en användare med samma UID som i `libnss-ato.conf`. Vi lägger upp system-kontot `tac_helper` och läser in dess `passwd` till `libnss-ato.conf`.
 
-## Kedjan
+## Chain of events
 
 Följande händer för en användare som inte finns sedan tidigare på servern.
 1) Användaren försöker logga in (med rätt lösenord) till servern
@@ -43,7 +53,7 @@ Följande händer för en användare som inte finns sedan tidigare på servern.
 2) Användaren försöker bli sudo
    1) `PAM/tacplus_sudo` körs och där räcker det att användaren autentiseras från TACACS-servern för att bli `sudo`
 
-## Paket
+## Packages
 
 ```
 sudo -E bash
