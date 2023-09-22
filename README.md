@@ -19,6 +19,7 @@ Except for Debian and for example Ubuntu, the below cut and paste assumes:
 * sed:
   * That `/etc/pam.d/sudo` and `/etc/pam.d/sshd` look like they should so `sed` can do it's thing
   * Goes for `nsswitch.conf` too
+* libpam-tacplus
 
 If there are packages available, use them instead of git clone. The packages will survive upgrades better.
 
@@ -33,11 +34,31 @@ Features:
 Limitations:
 
 * Does not handle TACACS password changes
+* New user is required to login twice, first time to populate local user
+
+## Packages & links
 
 ### libnss-ato
 
 Requires that a user exists locally, specifically a user with the same UID as in `libnss-ato.conf`. We create the system-account `tac_helper` and grep it's `/etc/passwd` to `libnss-ato.conf`.
 Read more [here](https://github.com/donapieppo/libnss-ato).
+
+### libpam-tacplus
+
+More can be read [bere](https://github.com/kravietz/pam_tacplus).
+
+### Helpful links
+
+CUMULUS has done this [before](https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-55/System-Configuration/Authentication-Authorization-and-Accounting/TACACS/).
+SSH reeeeee [here](https://groups.google.com/g/event-driven-servers/c/UkjMDuYAApM/m/7gW5YzxyDwAJ)
+NSS module [here](https://github.com/benschumacher/nss_tacplus)
+Future [reference](https://medium.com/@avirzayev/linux-pam-how-to-create-an-authentication-module-cc132115bdc5)
+Original(?) [author](https://github.com/jeroennijhof?tab=repositories), check out the `pam_script`.
+Reference to `pam_exec` [here](http://evertrue.github.io/blog/2016/02/03/fun-with-pam-scripts/)
+PAM status [codes](https://pubs.opengroup.org/onlinepubs/8329799/chap5.htm)
+DO [reference](https://www.digitalocean.com/community/tutorials/how-to-use-pam-to-configure-authentication-on-an-ubuntu-12-04-vps)
+Online sed [emulator](https://sed.js.org/)
+[Good](https://duo.com/blog/what-duo-unix-administrators-need-to-know-about-pluggable-authentication-modules) explanation on PAM controls, visual. Though still does not explain the entirety of PAM.
 
 ## Chain of events
 
