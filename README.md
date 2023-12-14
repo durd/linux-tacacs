@@ -112,7 +112,7 @@ cat <<EOF > /usr/sbin/pam_verify
 # * Add user without password and no name information
 # * Add user to groups sudo and adm
 # * Adds libnss-ato config back to nsswitch.conf
-if [[ "${PAM_TYPE}" == "auth" ]] && [[ "${PAM_SERVICE}" == "sshd" ]] && [ ! -d "/home/${PAM_USER}" ]; then
+if [[ "${PAM_TYPE}" == "open_session" ]] && [[ "${PAM_SERVICE}" == "sshd" ]] && [ ! -d "/home/${PAM_USER}" ]; then
   #useradd -m -s /bin/bash ${PAM_USER}
   sed -e 's/^passwd:.*ato/passwd:         files systemd/' -e 's/^shadow:.*ato/shadow:         files/' -i /etc/nsswitch.conf
   adduser --disabled-password --gecos "" ${PAM_USER}
